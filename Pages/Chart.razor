@@ -1,0 +1,190 @@
+﻿@page "/chart"
+
+<PageTitle>Chart</PageTitle>
+
+@using System.Diagnostics
+
+<div>
+    <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="600px"></MudChart>
+    <MudButton @onclick="RandomizeData">New Series</MudButton>
+    @*<MudText Typo="Typo.h6">Selected portion of the chart: @Index</MudText>*@
+</div>
+
+@code {
+
+    private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
+
+    public List<ChartSeries> Series = new List<ChartSeries>()
+    {
+        new ChartSeries() { Name = "Series 1", Data = new double[] { 90, 79, 72, 69, 62, 62, 55, 65, 70, 70 } },
+        new ChartSeries() { Name = "Series 2", Data = new double[] { 10, 41, 35, 51, 49, 62, 69, 91, 148, 148 } },
+    };
+    public string[] XAxisLabels = {"1", "", "", "", "", "", "", "", "", "10" };
+
+    Random random = new Random();
+    public int len_series = 25000; //количество испытаний
+
+
+    public int len_series_div500;
+
+
+
+    public void RandomizeData()
+    {
+        var banks = new List<ChartSeries>()
+        {
+            new ChartSeries() { Name = "Flat", Data = new double[len_series] },
+            new ChartSeries() { Name = "Kelly", Data = new double[len_series] },
+        };
+        //var watch = new Stopwatch();
+        int valuespins;
+        double valuebet;
+        int index_betsarray;
+
+
+        double kPay;
+        kPay = 2.099;
+
+        // начальные значения банков для двух схем проставления
+        banks[0].Data[0] = 130;
+        banks[1].Data[0] = 130;
+
+        //watch.Start();
+
+        XAxisLabels = new string[len_series];
+        XAxisLabels[0] = "1";
+        for (int i = 1; i < (len_series - 1); i++) { XAxisLabels[i] = ""; }
+        XAxisLabels[499] = Convert.ToString(len_series);
+        XAxisLabels[99] = Convert.ToString(len_series/5);
+        XAxisLabels[199] = Convert.ToString(2*(len_series/5));
+        XAxisLabels[299] = Convert.ToString(3*(len_series/5));
+        XAxisLabels[399] = Convert.ToString(4*(len_series/5));
+
+        
+        // вероятности на шагах проставления которые "представляются" прогнозисту
+        double[] betsarray = new double[30];
+        betsarray[0] = 18.0 / 37.0;
+        betsarray[1] = 18.0 / 37.0;
+        betsarray[2] = 18.0 / 37.0;
+        betsarray[3] = 18.0 / 37.0;
+        betsarray[4] = 18.0 / 37.0;
+        betsarray[5] = 18.0 / 37.0;
+        betsarray[6] = 18.0 / 37.0;
+        betsarray[7] = 18.0 / 37.0;
+        betsarray[8] = 18.0 / 37.0;
+        betsarray[9] = 18.0 / 37.0;
+        betsarray[10] = 18.0 / 37.0;
+        betsarray[11] = 18.0 / 37.0;
+        betsarray[12] = 18.0 / 37.0;
+        betsarray[13] = 18.0 / 37.0;
+        betsarray[14] = 18.0 / 37.0;
+        betsarray[15] = 18.0 / 37.0;
+        betsarray[16] = 18.0 / 37.0;
+        betsarray[17] = 18.0 / 37.0;
+        betsarray[18] = 18.0 / 37.0;
+        betsarray[19] = 18.0 / 37.0;
+        betsarray[20] = 18.0 / 37.0;
+        betsarray[21] = 18.0 / 37.0;
+        betsarray[22] = 18.0 / 37.0;
+        betsarray[23] = 18.0 / 37.0;
+        betsarray[24] = 18.0 / 37.0;
+        betsarray[25] = 18.0 / 37.0;
+        betsarray[26] = 18.0 / 37.0;
+        betsarray[27] = 18.0 / 37.0;
+        betsarray[28] = 18.0 / 37.0;
+        betsarray[29] = 18.0 / 37.0;
+
+        index_betsarray = -1; // счетчик на каком мы шаге в цикле проставления до победы.
+
+        for (int i = 1; i < len_series; i++)
+        {
+            valuespins = random.Next(0, 37);
+            //Console.WriteLine(valuespins);
+
+            index_betsarray = index_betsarray + 1;
+
+            if (index_betsarray == 30)
+            { index_betsarray = 29;
+            }
+            valuebet = (banks[1].Data[i - 1]) * ((kPay * betsarray[index_betsarray]) - 1.0) / (kPay -1.0);
+            //Console.WriteLine(valuebet);
+
+            if ((valuespins < 19) & (valuespins > 0))
+            { banks[0].Data[i] = banks[0].Data[i - 1] + 1.0;
+                banks[1].Data[i] = banks[1].Data[i - 1] - valuebet;
+            }
+            else if (valuespins > 0)
+            { banks[0].Data[i] = banks[0].Data[i - 1] - 1.0 ;
+                banks[1].Data[i] = banks[1].Data[i - 1] + (kPay - 1.0) * valuebet ;
+                index_betsarray = -1;
+            }
+            else
+            { banks[0].Data[i] = banks[0].Data[i - 1] - 1.0;
+                banks[1].Data[i] = banks[1].Data[i - 1] - valuebet;
+            }
+        }
+        //watch.Stop();
+        //Console.Write("Посчитано за");
+        //Console.WriteLine(" Time Elapsed {0} ms", watch.Elapsed.TotalMilliseconds);
+
+        // VVVV  формирование массива точек для отрисовки, для скорости
+
+
+        if (len_series > 500) //  !! если симулируем длинную последовательность то результаты сворачиваем в последовательност длиной ~ 500
+        {
+            int n_real_in_onediv500 = len_series / 250;
+            int len_series_svert = 500;
+            int index_start;
+
+
+            var banks_svert = new List<ChartSeries>()
+        {
+            new ChartSeries() { Name = "Flat", Data = new double[len_series_svert] },
+            new ChartSeries() { Name = "Kelly", Data = new double[len_series_svert] },
+        };
+
+            banks_svert[0].Data[0] = 130;
+            banks_svert[1].Data[0] = 130;
+
+            for (int j = 1; j < 499; j = j + 2)
+            {
+
+                index_start = (n_real_in_onediv500 * (j - 1) / 2) + 1; // вычисление стартового индекса для каждого свертываемого набора
+
+                banks_svert[0].Data[j] = banks[0].Data[index_start];
+                banks_svert[0].Data[j + 1] = banks[0].Data[index_start];
+                banks_svert[1].Data[j] = banks[1].Data[index_start];
+                banks_svert[1].Data[j + 1] = banks[1].Data[index_start];
+
+                for (int i = 1; i < n_real_in_onediv500; i++)   // цикл по числу спинов в сворачиваемом в 2 точки диапазоне
+                {
+
+                    if (banks_svert[0].Data[j] > banks[0].Data[index_start + i])
+                        banks_svert[0].Data[j] = banks[0].Data[index_start + i];
+                    else if (banks_svert[0].Data[j + 1] < banks[0].Data[index_start + i])
+                        banks_svert[0].Data[j + 1] = banks[0].Data[index_start + i];
+
+
+                    if (banks_svert[1].Data[j] > banks[1].Data[index_start + i])
+                        banks_svert[1].Data[j] = banks[1].Data[index_start + i];
+                    else if (banks_svert[1].Data[j + 1] < banks[1].Data[index_start + i])
+                        banks_svert[1].Data[j + 1] = banks[1].Data[index_start + i];
+                }
+            }
+
+
+            banks_svert[0].Data[499] = banks[0].Data[len_series - 1];
+            banks_svert[1].Data[499] = banks[1].Data[len_series - 1];
+            
+            Series = banks_svert;
+            //Console.WriteLine(banks_svert[1].Data[499]);
+
+            
+        }
+        else
+
+            Series = banks;
+
+        StateHasChanged();
+    }
+}
