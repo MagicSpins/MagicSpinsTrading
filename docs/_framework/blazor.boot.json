@@ -1,5 +1,5 @@
 {
-  "cacheBootResources": true,
+  "cacheBootResources": false,
   "config": [ ],
   "debugBuild": false,
   "entryAssembly": "MagicSpinsTrading",
@@ -7,7 +7,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "MagicSpinsTrading.dll": "sha256-LDTZPWSc3mzG5ptYdGq4\/\/pMnDknYJ6syoaAwFpmWF8=",
+      "MagicSpinsTrading.dll": "sha256-QbKYreBZpX4PnpF\/Y7HJDUfLsd9zKyDt3+B3l42IKSw=",
       "Microsoft.AspNetCore.Components.dll": "sha256-pETfu7x1iggE1PeGG2jWpjmlhMzmsI\/W+u6JZhF8Qpw=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-nJmEg2IYvDzVQb6qR\/an7WvJLW29DBy9XtI4ZrtVgwY=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-OfawION\/UfFO75U4pMPDVhHt71EbKuF3qxDeiPFGqKo=",
@@ -45,7 +45,7 @@
     "libraryInitializers": null,
     "pdb": null,
     "runtime": {
-      "dotnet.6.0.5.icj53a9y7o.js": "sha256-783uOt0jgblQfP6Yz5TJeuW2xxtl6UHZQPngZtCz79U=",
+      "dotnet.6.0.5.alwg217dfg.js": "sha256-783uOt0jgblQfP6Yz5TJeuW2xxtl6UHZQPngZtCz79U=",
       "dotnet.timezones.blat": "sha256-vRU6+wGzQ3FJ0JtyPJtipblPe9MvJf+qKY20xZhuyKQ=",
       "dotnet.wasm": "sha256-vmRDDmubs49Hwffzas8p5i8FwcPcYxb33H6g5\/2UyYk=",
       "icudt.dat": "sha256-Zuq0dWAsBm6\/2lSOsz7+H9PvFaRn61KIXHMMwXDfvyE=",
