@@ -6,23 +6,44 @@
 
 <div>
     <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="600px"></MudChart>
-    <MudButton @onclick="RandomizeData">New Series</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="RandomizeData">New Series</MudButton>
     @*<MudText Typo="Typo.h6">Selected portion of the chart: @Index</MudText>*@
 </div>
+ <table> 
+     <tr>
+     <td>
+     <MudNumericField HideSpinButtons="true" @bind-Value="len_series" Label="Number of spins" Variant="Variant.Outlined" Min="500" Max="1000000" />
+     </td>
+     <td>
+     <MudNumericField HideSpinButtons="true" @bind-Value="startbank" Label="Starting bankroll" Variant="Variant.Outlined" Min="100" Max="1000000"/>
+     </td>
+     <td>
+     <MudNumericField HideSpinButtons="true" @bind-Value="kPay" Label="Payout of the bet gained with a win" Variant="Variant.Outlined" Min="2.06" Max="3.001"/>
+     </td>
+ </tr>
+</table>
 
 @code {
-
     private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
+
+    public int len_series { get; set; }
+    public double startbank { get; set; } 
+    public double kPay { get; set; }
+
+    
 
     public List<ChartSeries> Series = new List<ChartSeries>()
     {
         new ChartSeries() { Name = "Series 1", Data = new double[] { 90, 79, 72, 69, 62, 62, 55, 65, 70, 70 } },
         new ChartSeries() { Name = "Series 2", Data = new double[] { 10, 41, 35, 51, 49, 62, 69, 91, 148, 148 } },
     };
-    public string[] XAxisLabels = {"1", "", "", "", "", "", "", "", "", "10" };
+    public string[] XAxisLabels = { "1", "", "", "", "", "", "", "", "", "10" };
+
+        
+       
 
     Random random = new Random();
-    public int len_series = 5000; //количество испытаний
+    // public int len_series = 5000; !REM количество испытаний
 
 
     public int len_series_div500;
@@ -42,12 +63,13 @@
         int index_betsarray;
 
 
-        double kPay;
-        kPay = 2.099;
+   //     double kPay;
+   //     kPay = 2.099;
+            
 
         // начальные значения банков для двух схем проставления
-        banks[0].Data[0] = 130;
-        banks[1].Data[0] = 130;
+        banks[0].Data[0] = startbank;
+        banks[1].Data[0] = startbank;
 
         //watch.Start();
 
@@ -143,8 +165,8 @@
             new ChartSeries() { Name = "Kelly", Data = new double[len_series_svert] },
         };
 
-            banks_svert[0].Data[0] = 130;
-            banks_svert[1].Data[0] = 130;
+            banks_svert[0].Data[0] = startbank;
+            banks_svert[1].Data[0] = startbank;
 
             for (int j = 1; j < 499; j = j + 2)
             {
